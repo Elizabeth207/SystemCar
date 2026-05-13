@@ -34,7 +34,7 @@ app.use(express.json());
 
 // Session
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'keyboard cat',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: { maxAge: 1000 * 60 * 60 * 4 }
@@ -62,5 +62,5 @@ app.use('/mantenimientos', mantenimientosRoutes);
 
 // Iniciar servidor
 app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
+  console.log(`Servidor corriendo en puerto ${PORT}`);
 });
