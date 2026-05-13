@@ -24,7 +24,7 @@
               <i class="fa-solid fa-envelope text-gray-400"></i>
             </span>
             <input type="email" name="email" required 
-              pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+              pattern="[^@]+@[^@]+\.[^@]+"
               title="Ingresa un correo electrónico válido"
               placeholder="tucorreo@dominio.com"
               class="flex-1 block w-full rounded-lg border border-gray-200 px-4 py-2 focus:border-pink-500 focus:ring-pink-500/20 bg-white validate-input" />
@@ -50,7 +50,7 @@
             const password = this.querySelector('[name="password"]');
             
             // Validar email
-            if (!email.value.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)) {
+            if (!email.value.match(/^[^@]+@[^@]+\.[^@]+$/)) {
               showError(email, 'Por favor, ingresa un correo electrónico válido');
               isValid = false;
             } else {
