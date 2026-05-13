@@ -15,6 +15,8 @@ const pagosRoutes = require("./routes/pagos.routes");
 const mantenimientosRoutes = require("./routes/mantenimientos.routes");
 const PORT = process.env.PORT || 4000;
 
+console.log("APP INICIANDO...");
+
 // Configuración del motor de plantillas
 const hbsHelpers = require('./utils/hbsHelpers');
 
@@ -31,6 +33,11 @@ app.set('views', path.join(__dirname, 'views'));
 // Middleware
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+
+// Health check - ANTES de session y rutas
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
 
 // Session
 app.use(session({
@@ -62,5 +69,5 @@ app.use('/mantenimientos', mantenimientosRoutes);
 
 // Iniciar servidor
 app.listen(PORT, () => {
-  console.log(`Servidor corriendo en puerto ${PORT}`);
+  console.log("LISTO - Servidor corriendo en puerto", PORT);
 });
