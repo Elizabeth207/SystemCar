@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alquiler de Vehículos</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome (iconos) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <!-- Chart.js para gráficos en dashboard -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- SweetAlert2 para alerts bonitos -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+</head>
+<body class="bg-gray-50 font-sans antialiased">
+  <div class="min-h-screen flex bg-gradient-to-br from-gray-50 to-purple-50/30">
+    <!-- Sidebar -->
+    {{> sidebar}}
+    
+    <!-- Contenido principal -->
+    <div class="flex-1">
+      <!-- Navbar -->
+      {{> navbar}}
+      
+      <!-- Contenido de la página -->
+      <main class="p-8 pt-6 max-w-[1600px] mx-auto">
+        {{{body}}}
+      </main>
+    </div>
+  </div>
+  <script>
+    // Global handler para confirmación de eliminación con SweetAlert2
+    document.addEventListener('DOMContentLoaded', function(){
+      document.querySelectorAll('.delete-form').forEach(form => {
+        form.addEventListener('submit', function(e){
+          e.preventDefault();
+          const submitBtn = form.querySelector('button[type="submit"]');
+          const itemName = form.dataset.name || 'este elemento';
+          Swal.fire({
+            title: '¿Estás seguro?',
+            text: `No podrás revertir la acción sobre ${itemName}.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // mostrar feedback y enviar formulario
+              Swal.fire({ title: 'Eliminando...', timer: 800, didOpen: () => Swal.showLoading() });
+              form.submit();
+            }
+          });
+        });
+      });
+      // Mostrar alertas de guardado/edición a partir de query params: ?msg=Texto&type=success
+      const params = new URLSearchParams(window.location.search);
+      const msg = params.get('msg');
+      const type = params.get('type') || 'success';
+      if(msg){
+        Swal.fire({ icon: type, title: msg, timer: 2200, showConfirmButton:false });
+      }
+    });
+    
+      // Global live search: usa el input del navbar (#globalSearchInput) para filtrar la primera tabla visible en el main
+      document.addEventListener('DOMContentLoaded', function(){
+        const globalInput = document.getElementById('globalSearchInput');
+        if (!globalInput) return;
+        function filterTables(q){
+          const table = document.querySelector('main table');
+          if (!table) return;
+          const tbody = table.tBodies[0];
+          const rows = tbody ? Array.from(tbody.rows) : [];
+          rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = q === '' || text.includes(q) ? '' : 'none';
+          });
+        }
+        // Debounce para no filtrar en cada pulsación instantáneamente
+        let timer = null;
+        globalInput.addEventListener('input', function(e){
+          const q = this.value.trim().toLowerCase();
+          clearTimeout(timer);
+          timer = setTimeout(() => filterTables(q), 120);
+        });
+      });
+
+      // Global form submit feedback: muestra SweetAlert "Guardando..." para formularios marcados
+      document.addEventListener('DOMContentLoaded', function(){
+        document.querySelectorAll('form.needs-submit-feedback').forEach(form => {
+          form.addEventListener('submit', function(e){
+            // show loading indicator and then submit the form (allow natural navigation)
+            e.preventDefault();
+            if (typeof Swal !== 'undefined'){
+              Swal.fire({
+                title: 'Guardando...',
+                html: 'Por favor espera',
+                didOpen: () => {
+                  Swal.showLoading();
+                  // submit after small delay so the loading modal appears
+                  setTimeout(() => form.submit(), 300);
+                },
+                allowOutsideClick: false,
+                showConfirmButton: false
+              });
+            } else {
+              form.submit();
+            }
+          });
+        });
+      });
+
+      // Global validation handler: para formularios con clase needs-validate
+      document.addEventListener('DOMContentLoaded', function(){
+        document.querySelectorAll('form.needs-validate').forEach(form => {
+          // prevent native validation UI
+          form.setAttribute('novalidate', 'novalidate');
+
+          form.addEventListener('submit', function(e){
+            const invalid = [];
+            // check constraint validation for relevant controls
+            Array.from(form.elements).forEach(el => {
+              if (el.willValidate && !el.checkValidity()) {
+                invalid.push({name: el.name || el.id || el.placeholder || 'campo', message: el.validationMessage || 'Inválido', element: el});
+              }
+            });
+
+            if (invalid.length > 0) {
+              e.preventDefault();
+              // Usar validación nativa del navegador y enfocar el primer campo inválido
+              const first = invalid[0];
+              try {
+                if (typeof first.element.reportValidity === 'function') {
+                  first.element.reportValidity();
+                } else {
+                  first.element.focus();
+                }
+              } catch (err) {
+                try { first.element.focus(); } catch(e){}
+              }
+              return;
+            }
+
+            // Si el formulario tiene clase needs-confirm, pedir confirmación antes de enviar
+            if (form.classList.contains('needs-confirm')) {
+              e.preventDefault();
+              Swal.fire({
+                title: '¿Confirmar acción?',
+                text: '¿Deseas continuar con esta operación?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Sí',
+                cancelButtonText: 'No',
+                reverseButtons: true
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  // mostrar loading y enviar
+                  Swal.fire({title:'Procesando...', didOpen: ()=>Swal.showLoading(), showConfirmButton:false, allowOutsideClick:false});
+                  setTimeout(()=> form.submit(), 300);
+                }
+              });
+            }
+            // si no necesita confirmación y pasó validación, dejar que el listener needs-submit-feedback maneje el loading
+          });
+        });
+      });
+  </script>
+</body>
+</html>

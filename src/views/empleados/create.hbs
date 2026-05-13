@@ -1,0 +1,30 @@
+{{#> layout}}
+<div class="form-card bg-white p-6 rounded-lg shadow max-w-lg">
+  <h2 class="text-xl font-bold mb-1 flex items-center gap-3"><i class="fa-solid fa-user-tie text-indigo-600"></i> Agregar Empleado</h2>
+  <p class="text-sm text-gray-500 mb-4">Completa los datos del empleado y pulsa Guardar.</p>
+  <form action="/empleados/add" method="post" class="space-y-4 needs-validate needs-submit-feedback needs-confirm">
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Nombre</label>
+      <input name="nombre" required class="w-full border border-gray-200 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-100" />
+    </div>
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Cargo</label>
+  <input name="cargo" required class="w-full border border-gray-200 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-100" />
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Teléfono</label>
+  <input name="telefono" required pattern="\\d{9}" title="Ingrese 9 dígitos" class="w-full border border-gray-200 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-100" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Correo</label>
+  <input name="correo" type="email" required class="w-full border border-gray-200 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-100" />
+      </div>
+    </div>
+    <div class="flex items-center gap-3">
+  <button type="submit" class="btn-accent inline-flex items-center gap-2 px-4 py-2 rounded font-semibold"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
+      <a href="/empleados" class="inline-flex items-center gap-2 px-4 py-2 rounded border text-gray-600"><i class="fa-solid fa-ban"></i> Cancelar</a>
+    </div>
+  </form>
+</div>
+{{/layout}}

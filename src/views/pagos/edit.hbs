@@ -1,0 +1,97 @@
+{{#> layout}}
+<div class="form-card bg-white p-6 rounded-lg shadow max-w-lg">
+  <h2 class="text-xl font-bold mb-1 flex items-center gap-3">
+    <i class="fas fa-money-bill-wave text-indigo-600"></i> Editar Pago
+  </h2>
+  <p class="text-sm text-gray-500 mb-4">Modifica los detalles del pago</p>
+
+  <form action="/pagos/edit/{{pago.id}}" method="post" class="space-y-4 needs-validate needs-submit-feedback needs-confirm">
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Alquiler</label>
+      <select name="id_alquiler" required class="w-full border border-gray-200 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-100">
+        {{#each alquileres}}
+          <option value="{{this.id}}" {{#if (eq this.id ../pago.id_alquiler)}}selected{{/if}}>
+            {{#if this.marca}}{{this.marca}} {{this.modelo}}{{else}}Alquiler #{{this.id}}{{/if}} - {{#if this.cliente_nombre}}{{this.cliente_nombre}}{{else}}Cliente #{{this.id_cliente}}{{/if}}
+          </option>
+        {{/each}}
+      </select>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Monto</label>
+        <div class="relative">
+          <i class="fas fa-money-bill absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+          <input 
+            type="number" 
+            name="monto" 
+            step="0.01" 
+            value="{{pago.monto}}" 
+            required 
+            class="w-full border border-gray-200 pl-10 pr-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-100"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Fecha</label>
+        <div class="relative">
+          <i class="fas fa-calendar absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+          <input 
+            type="date" 
+            name="fecha_pago" 
+            value="{{formatDate pago.fecha_pago 'YYYY-MM-DD'}}"
+            required 
+            class="w-full border border-gray-200 pl-10 pr-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-100"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Método de Pago</label>
+      <div class="relative">
+        <i class="fas fa-credit-card absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+  <select name="metodo_pago" required class="w-full border border-gray-200 pl-10 pr-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-100">
+          <option value="efectivo" {{#if (eq pago.metodo "efectivo")}}selected{{/if}}>Efectivo</option>
+          <option value="tarjeta" {{#if (eq pago.metodo "tarjeta")}}selected{{/if}}>Tarjeta</option>
+          <option value="transferencia" {{#if (eq pago.metodo "transferencia")}}selected{{/if}}>Transferencia</option>
+        </select>
+      </div>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Estado</label>
+      <div class="relative">
+        <i class="fas fa-check-circle absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+        <select name="estado" required class="w-full border border-gray-200 pl-10 pr-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-100">
+          <option value="pendiente" {{#if (eq pago.estado "pendiente")}}selected{{/if}}>Pendiente</option>
+          <option value="completado" {{#if (eq pago.estado "completado")}}selected{{/if}}>Completado</option>
+          <option value="cancelado" {{#if (eq pago.estado "cancelado")}}selected{{/if}}>Cancelado</option>
+        </select>
+      </div>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Observaciones</label>
+      <div class="relative">
+        <i class="fas fa-comment absolute left-3 top-3 text-gray-400"></i>
+        <textarea 
+          name="observaciones" 
+          rows="3" 
+          class="w-full border border-gray-200 pl-10 pr-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-100"
+        >{{pago.observaciones}}</textarea>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 rounded font-semibold bg-gradient-to-r from-pink-600 to-purple-600 text-white shadow hover:from-pink-700 hover:to-purple-700 transition-colors">
+        <i class="fas fa-floppy-disk"></i> Actualizar
+      </button>
+      <a href="/pagos" class="inline-flex items-center gap-2 px-4 py-2 rounded border text-gray-600">
+        <i class="fas fa-ban"></i> Cancelar
+      </a>
+    </div>
+  </form>
+</div>
+{{/layout}}

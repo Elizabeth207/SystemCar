@@ -1,0 +1,115 @@
+{{#> layout}}
+<div class="card">
+  <div class="card-accent"></div>
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 mt-3 gap-2">
+    <div>
+      <h2 class="text-2xl md:text-3xl font-bold uppercase flex items-center gap-4">
+        <i class="fa-solid fa-users text-3xl md:text-4xl text-pink-600 rounded-full p-3 bg-pink-50"></i>
+        <span>Clientes</span>
+      </h2>
+      <p class="text-sm text-gray-500 mt-1">Gestión de clientes. Añade nuevos clientes y actualiza sus datos cuando sea necesario.</p>
+    </div>
+    <div class="flex items-center">
+      <a href="/clientes/add" class="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-pink-600 to-purple-600 text-white rounded-xl shadow-lg hover:from-pink-700 hover:to-purple-700 transition-colors"><i class="fa-solid fa-plus"></i> Agregar</a>
+    </div>
+  </div>
+
+
+{{#if clientes.length}}
+  <div class="bg-white rounded-2xl shadow-xl shadow-gray-200/20 overflow-hidden border border-gray-100">
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gradient-to-r from-pink-500 to-purple-600">
+          <tr>
+              <th class="px-6 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider rounded-tl-2xl">
+                {{{getFieldIcon 'nombre'}}} <span class="ml-2">Nombre</span>
+              </th>
+              <th class="px-6 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">
+                {{{getFieldIcon 'dni'}}} <span class="ml-2">DNI</span>
+              </th>
+              <th class="px-6 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">
+                {{{getFieldIcon 'telefono'}}} <span class="ml-2">Teléfono</span>
+              </th>
+              <th class="px-6 py-4 text-center text-sm font-semibold text-white uppercase tracking-wider rounded-tr-2xl">
+                {{{getFieldIcon 'acciones'}}} <span class="ml-2">Acciones</span>
+              </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-100" id="clientesTableBody">
+          {{#each clientes}}
+          <tr class="hover:bg-gray-50/50 transition-colors">
+            <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm font-medium {{getGenderColor this.nombre}} flex items-center">
+                  <i class="fas fa-user mr-2"></i>{{this.nombre}}
+                </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-600 flex items-center">
+                  <i class="fas fa-id-card mr-2 text-gray-400"></i>{{this.dni}}
+                </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-600 flex items-center">
+                  <i class="fas fa-phone mr-2 text-gray-400"></i>{{this.telefono}}
+                </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-center">
+              <div class="flex items-center justify-center gap-2">
+                <button onclick="verDetalles({{json this}})" class="inline-flex items-center px-3 py-1.5 bg-gray-50 text-gray-700 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors">
+                  <i class="fa-solid fa-eye text-gray-500 mr-1.5"></i>
+                  <span>Ver</span>
+                </button>
+                <a href="/clientes/edit/{{this.id}}" class="inline-flex items-center px-3 py-1.5 bg-purple-50 text-purple-600 rounded-lg border border-purple-100 hover:bg-purple-100 transition-colors">
+                  <i class="fa-solid fa-pen text-purple-500 mr-1.5"></i>
+                  <span>Editar</span>
+                </a>
+                <form action="/clientes/delete/{{this.id}}" method="post" class="inline delete-form" data-name="{{this.nombre}}">
+                  <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-600 rounded-lg border border-red-100 hover:bg-red-100 transition-colors">
+                    <i class="fa-solid fa-trash text-red-500 mr-1.5"></i>
+                    <span>Eliminar</span>
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {{else}}
+    <div class="text-center py-12">
+      <div class="mb-4">
+        <i class="fa-solid fa-users text-6xl text-gray-200"></i>
+      </div>
+      <h3 class="text-lg font-medium text-gray-400">No hay clientes registrados</h3>
+      <p class="text-gray-400 mt-1">Comienza agregando un nuevo cliente</p>
+    </div>
+  {{/if}}
+
+{{/layout}}
+
+<script>
+function verDetalles(cliente) {
+  const nombre = cliente.nombre || '-';
+  Swal.fire({
+    showCloseButton: true,
+    showConfirmButton: false,
+    width: 640,
+    html: `
+      <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <div class="p-6 bg-indigo-50">
+          <div class="text-sm text-indigo-600">Cliente</div>
+          <h3 class="text-2xl font-extrabold text-gray-800 mt-1">${nombre}</h3>
+        </div>
+        <div class="p-6 text-sm text-gray-700">
+          <div><strong>DNI:</strong> ${cliente.dni || '-'}</div>
+          <div class="mt-2"><strong>Teléfono:</strong> ${cliente.telefono || '-'}</div>
+          <div class="mt-2"><strong>Dirección:</strong> ${cliente.direccion || '-'}</div>
+        </div>
+      </div>
+    `,
+    customClass: { popup: 'rounded-xl' }
+  });
+}
+</script>

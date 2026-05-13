@@ -1,0 +1,190 @@
+{{#> layout}}
+<div class="card">
+  <div class="card-accent"></div>
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 mt-3 gap-2">
+    <div>
+      <h2 class="text-2xl md:text-3xl lg:text-4xl font-extrabold flex items-center gap-4">
+        <span class="inline-flex items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg">
+          <i class="fa-solid fa-hand-holding-dollar text-2xl md:text-3xl"></i>
+        </span>
+        <span class="leading-tight">Alquileres</span>
+      </h2>
+      <p class="text-sm text-gray-500 mt-2">Administración de alquileres: crea contratos, visualiza estados y gestiona pagos.</p>
+    </div>
+    <div class="flex items-center">
+      <a href="/alquileres/add" class="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-pink-600 to-purple-600 text-white rounded-xl shadow-lg hover:from-pink-700 hover:to-purple-700 transition-colors"><i class="fa-solid fa-plus"></i> Nuevo alquiler</a>
+    </div>
+  </div>
+  <!-- Barra de búsqueda (live) -->
+  
+  {{#if alquileres.length}}
+  <div class="data-table">
+    <div class="overflow-hidden rounded-lg shadow border">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead>
+          <tr class="bg-gradient-to-r from-pink-500 to-purple-600">
+            <th class="px-6 py-3 text-left text-sm font-semibold text-white rounded-tl-lg">ID</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-white">Vehículo</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-white">Cliente</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-white">Fechas</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-white">Total</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-white">Estado</th>
+            <th class="px-6 py-3 text-center text-sm font-semibold text-white rounded-tr-lg">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-100">
+          {{#each alquileres}}
+          <tr class="hover:bg-gray-50">
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2">
+                {{{getFieldIcon 'id'}}}
+                <span class="text-sm text-gray-700">{{this.id}}</span>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2">
+                {{{getFieldIcon 'placa'}}}
+                <span class="text-sm text-gray-700">{{this.marca}} {{this.modelo}}</span>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2">
+                {{{getFieldIcon 'nombre'}}}
+                <span class="text-sm text-gray-700">{{this.cliente_nombre}}</span>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2">
+                {{{getFieldIcon 'fecha'}}}
+                <span class="text-sm text-gray-700">{{formatDate this.fecha_inicio 'DD-MM-YYYY'}} - {{formatDate this.fecha_fin 'DD-MM-YYYY'}}</span>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2">
+                {{{getFieldIcon 'precio'}}}
+                <span class="text-sm text-gray-700">{{formatCurrency this.total}}</span>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              {{#ifEquals this.estado 'activo'}}
+                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-50 text-green-700 text-sm font-medium">
+                  <i class="fa-solid fa-check-circle"></i> Activo
+                </span>
+              {{else ifEquals this.estado 'finalizado'}}
+                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-sm font-medium">
+                  <i class="fa-solid fa-circle-check"></i> Finalizado
+                </span>
+              {{else ifEquals this.estado 'cancelado'}}
+                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-50 text-red-700 text-sm font-medium"> 
+                  <i class="fa-solid fa-xmark-circle"></i> Cancelado
+                </span>
+              {{else}}
+                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-50 text-yellow-700 text-sm font-medium">
+                  <i class="fa-solid fa-hourglass-half"></i> {{this.estado}}
+                </span>
+              {{/ifEquals}}
+            </td>
+            <td class="px-6 py-4 text-center">
+              <div class="flex items-center justify-center gap-2">
+                <button onclick="verDetalles({{json this}})" class="inline-flex items-center px-3 py-1.5 bg-gray-50 text-gray-700 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors">
+                  <i class="fa-solid fa-eye text-gray-500 mr-1.5"></i>Ver
+                </button>
+                <a href="/alquileres/edit/{{this.id}}" class="inline-flex items-center px-3 py-1.5 bg-pink-50 text-pink-600 rounded-lg border border-pink-100 hover:bg-pink-100 transition-colors">
+                  <i class="fa-solid fa-pen text-pink-500 mr-1.5"></i>Editar
+                </a>
+                <form action="/alquileres/delete/{{this.id}}" method="post" class="inline delete-form" data-name="Alquiler #{{this.id}}">
+                  <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-600 rounded-lg border border-red-100 hover:bg-red-100 transition-colors">
+                    <i class="fa-solid fa-trash text-red-500 mr-1.5"></i>Eliminar
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {{else}}
+    <p>No hay alquileres registrados.</p>
+  {{/if}}
+</div>
+{{/layout}}
+
+<script>
+function verDetalles(alquiler) {
+  const total = alquiler.total ? ('S/ ' + Number(alquiler.total).toFixed(2)) : '-';
+  const estado = (alquiler.estado || '').toLowerCase();
+  const estadoIcons = {
+    activo: '<i class="fa-solid fa-check-circle text-green-600"></i>',
+    finalizado: '<i class="fa-solid fa-circle-check text-gray-600"></i>',
+    cancelado: '<i class="fa-solid fa-xmark-circle text-red-600"></i>'
+  };
+  const estadoIcon = estadoIcons[estado] || '<i class="fa-solid fa-hourglass-half text-yellow-600"></i>';
+
+  Swal.fire({
+    showCloseButton: true,
+    showConfirmButton: false,
+    width: 720,
+    html: `
+      <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <div class="p-6">
+          <div class="grid grid-cols-2 gap-6">
+            <div class="flex items-start gap-3">
+              <i class="fas fa-hashtag text-purple-500 mt-1"></i>
+              <div>
+                <div class="text-xs text-gray-500">ID Alquiler</div>
+                <div class="font-medium text-lg mt-1">#${alquiler.id || '-'}</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <i class="fas fa-user text-purple-500 mt-1"></i>
+              <div>
+                <div class="text-xs text-gray-500">Cliente</div>
+                <div class="font-medium text-lg mt-1">${alquiler.cliente_nombre || '-'}</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <i class="fas fa-car text-purple-500 mt-1"></i>
+              <div>
+                <div class="text-xs text-gray-500">Vehículo</div>
+                <div class="font-medium text-lg mt-1">${alquiler.marca || '-'} ${alquiler.modelo || ''}</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <i class="fas fa-calendar-alt text-purple-500 mt-1"></i>
+              <div>
+                <div class="text-xs text-gray-500">Fecha Inicio</div>
+                <div class="font-medium text-lg mt-1">${alquiler.fecha_inicio ? new Date(alquiler.fecha_inicio).toLocaleDateString('es-ES', {day: '2-digit', month: '2-digit', year: 'numeric'}) : '-'}</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <i class="fas fa-calendar-check text-purple-500 mt-1"></i>
+              <div>
+                <div class="text-xs text-gray-500">Fecha Fin</div>
+                <div class="font-medium text-lg mt-1">${alquiler.fecha_fin ? new Date(alquiler.fecha_fin).toLocaleDateString('es-ES', {day: '2-digit', month: '2-digit', year: 'numeric'}) : '-'}</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <i class="fas fa-money-bill-wave text-purple-500 mt-1"></i>
+              <div>
+                <div class="text-xs text-gray-500">Total</div>
+                <div class="font-medium text-lg mt-1">${total}</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <i class="fas fa-circle-check text-purple-500 mt-1"></i>
+              <div>
+                <div class="text-xs text-gray-500">Estado</div>
+                <div class="font-medium text-lg mt-1">${alquiler.estado || '-'}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `,
+    customClass: { popup: 'rounded-xl' }
+  });
+}
+</script>
+ 

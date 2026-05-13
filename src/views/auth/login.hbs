@@ -1,0 +1,120 @@
+{{#> auth}}
+<div class="max-w-md mx-auto">
+  <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+    <div class="bg-gradient-to-r from-pink-500 to-purple-600 p-6 text-white">
+      <h2 class="text-2xl font-bold flex items-center gap-3">
+        <i class="fa-solid fa-right-to-bracket text-3xl"></i>
+        Iniciar Sesión
+      </h2>
+      <p class="text-pink-100 mt-2">Accede a tu panel para Gestionar Vehículos.</p>
+    </div>
+
+    <div class="p-6">
+      {{#if error}}
+      <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
+        {{error}}
+      </div>
+      {{/if}}
+
+      <form action="/login" method="POST" class="space-y-4 needs-validate needs-submit-feedback" id="loginForm">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <div class="flex items-center gap-3">
+            <span class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gray-50">
+              <i class="fa-solid fa-envelope text-gray-400"></i>
+            </span>
+            <input type="email" name="email" required 
+              pattern="[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+              title="Ingresa un correo electrónico válido"
+              placeholder="tucorreo@dominio.com"
+              class="flex-1 block w-full rounded-lg border border-gray-200 px-4 py-2 focus:border-pink-500 focus:ring-pink-500/20 bg-white validate-input" />
+          </div>
+          <div class="error-message text-red-500 text-sm mt-1 hidden"></div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+          <div class="flex items-center gap-3">
+            <span class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gray-50">
+              <i class="fa-solid fa-lock text-gray-400"></i>
+            </span>
+            <input type="password" name="password" required placeholder="********"
+              class="flex-1 block w-full rounded-lg border border-gray-200 px-4 py-2 focus:border-pink-500 focus:ring-pink-500/20 bg-white" />
+          </div>
+        </div>
+
+        <script>
+          document.getElementById('loginForm').addEventListener('submit', function(e) {
+            let isValid = true;
+            const email = this.querySelector('[name="email"]');
+            const password = this.querySelector('[name="password"]');
+            
+            // Validar email
+            if (!email.value.match(/[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/)) {
+              showError(email, 'Por favor, ingresa un correo electrónico válido');
+              isValid = false;
+            } else {
+              hideError(email);
+            }
+
+            // Validar contraseña
+            if (password.value.length < 6) {
+              showError(password, 'La contraseña debe tener al menos 6 caracteres');
+              isValid = false;
+            } else {
+              hideError(password);
+            }
+
+            if (!isValid) {
+              e.preventDefault();
+              Swal.fire({
+                icon: 'error',
+                title: 'Error de validación',
+                text: 'Por favor, corrige los errores señalados',
+                confirmButtonColor: '#EF4444'
+              });
+            }
+          });
+
+          // Funciones auxiliares para mostrar/ocultar errores
+          function showError(input, message) {
+            const errorDiv = input.parentElement.nextElementSibling;
+            errorDiv.textContent = message;
+            errorDiv.classList.remove('hidden');
+            input.classList.add('border-red-500');
+          }
+
+          function hideError(input) {
+            const errorDiv = input.parentElement.nextElementSibling;
+            errorDiv.classList.add('hidden');
+            input.classList.remove('border-red-500');
+          }
+
+          // Validación en tiempo real
+          document.querySelectorAll('.validate-input').forEach(input => {
+            input.addEventListener('input', function() {
+              if (this.checkValidity()) {
+                hideError(this);
+              }
+            });
+          });
+        </script>
+
+        <div class="pt-2">
+          <button type="submit"
+            class="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-white bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 shadow transition">
+            <i class="fa-solid fa-right-to-bracket"></i>
+            <span>Iniciar Sesión</span>
+          </button>
+        </div>
+
+        <div class="text-sm text-center">
+          <a href="/register" class="text-pink-600 hover:text-pink-500 font-medium">¿No tienes una cuenta? Regístrate</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <p class="text-center text-xs text-gray-400 mt-4">Al usar este sistema aceptas las políticas de uso.</p>
+</div>
+{{/auth}}

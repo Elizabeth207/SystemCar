@@ -1,0 +1,43 @@
+{{#> layout}}
+<div class="form-card bg-white p-6 rounded-lg shadow max-w-lg">
+  <h2 class="text-xl font-bold mb-1 flex items-center gap-3"><i class="fa-solid fa-users text-indigo-600"></i> Agregar Cliente</h2>
+  <p class="text-sm text-gray-500 mb-4">Ingresa los datos del nuevo cliente.</p>
+  <form action="/clientes/add" method="post" class="space-y-4 needs-validate needs-submit-feedback needs-confirm">
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Nombre completo</label>
+      <input name="nombre" required placeholder="Nombre y apellidos" class="w-full border border-gray-200 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-100" />
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+  <label class="block text-sm font-medium text-gray-700">DNI</label>
+  <input name="dni" maxlength="8" required pattern="\\d{8}" title="Ingrese 8 dígitos" placeholder="12345678" class="w-full border border-gray-200 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-100" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Teléfono</label>
+        <div class="relative">
+          <i class="fa-solid fa-phone absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+          <input name="telefono" type="tel" required pattern="\\d{9}" title="Ingrese 9 dígitos" placeholder="987654321" class="w-full border border-gray-200 pl-10 pr-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-100" />
+        </div>
+      </div>
+    </div>
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Dirección</label>
+      <div class="relative">
+        <i class="fa-solid fa-location-dot absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+  <input name="direccion" required placeholder="Av. Principal 123" class="w-full border border-gray-200 pl-10 pr-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-100" />
+      </div>
+    </div>
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Correo electrónico</label>
+      <div class="relative">
+        <i class="fa-solid fa-envelope absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+  <input name="correo" type="email" required placeholder="ejemplo@correo.com" class="w-full border border-gray-200 pl-10 pr-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-100" />
+      </div>
+    </div>
+    <div class="flex items-center gap-3">
+  <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 rounded font-semibold bg-gradient-to-r from-pink-600 to-purple-600 text-white shadow hover:from-pink-700 hover:to-purple-700 transition-colors"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
+      <a href="/clientes" class="inline-flex items-center gap-2 px-4 py-2 rounded border text-gray-600"><i class="fa-solid fa-ban"></i> Cancelar</a>
+    </div>
+  </form>
+</div>
+{{/layout}}

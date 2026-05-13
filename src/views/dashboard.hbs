@@ -1,0 +1,194 @@
+{{#> main}}
+<div class="bg-gradient-to-br from-indigo-50 via-white to-indigo-50 min-h-screen">
+  <div class="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
+    <!-- Encabezado del Dashboard (más llamativo) -->
+    <div class="mb-6 sm:mb-8 p-6 bg-gradient-to-r from-pink-50/60 to-purple-50/60 rounded-2xl shadow-2xl border border-white/20 backdrop-blur-sm">
+      <div class="flex items-center gap-4">
+        <div class="w-16 h-16 rounded-xl flex items-center justify-center bg-gradient-to-br from-pink-500 to-purple-600 text-white shadow-lg transform -rotate-6">
+          <i class="fas fa-gem text-2xl"></i>
+        </div>
+        <div>
+          <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-1 flex items-center gap-3">Panel de Control</h1>
+          <p class="text-gray-600 text-sm sm:text-base">Bienvenido al sistema — vistas rápidas y datos importantes al instante</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tarjetas de Estadísticas -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 sm:mb-8">
+      <div class="rounded-2xl p-4 sm:p-6 transform transition-all hover:scale-105 bg-white/60 backdrop-blur-sm shadow-2xl border border-white/20">
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <h3 class="text-base sm:text-lg font-semibold text-gray-800">Vehículos</h3>
+            <p class="text-xs text-gray-500">Total en inventario</p>
+          </div>
+          <div class="w-12 h-12 rounded-lg flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-xl">
+            <i class="fas fa-car text-xl"></i>
+          </div>
+        </div>
+        <p class="text-4xl sm:text-5xl font-extrabold text-indigo-600 mb-1 animate-pulse">{{stats.vehiculos}}</p>
+      </div>
+
+      <div class="rounded-2xl p-4 sm:p-6 transform transition-all hover:scale-105 bg-white/60 backdrop-blur-sm shadow-2xl border border-white/20">
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <h3 class="text-base sm:text-lg font-semibold text-gray-800">Alquileres</h3>
+            <p class="text-xs text-gray-500">Activos actualmente</p>
+          </div>
+          <div class="w-12 h-12 rounded-lg flex items-center justify-center bg-gradient-to-br from-emerald-400 to-emerald-600 text-white shadow-xl">
+            <i class="fas fa-key text-xl"></i>
+          </div>
+        </div>
+        <p class="text-4xl sm:text-5xl font-extrabold text-emerald-600 mb-1">{{stats.alquileresActivos}}</p>
+      </div>
+
+      <div class="rounded-2xl p-4 sm:p-6 transform transition-all hover:scale-105 bg-white/60 backdrop-blur-sm shadow-2xl border border-white/20">
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <h3 class="text-base sm:text-lg font-semibold text-gray-800">Mantenimientos</h3>
+            <p class="text-xs text-gray-500">Pendientes</p>
+          </div>
+          <div class="w-12 h-12 rounded-lg flex items-center justify-center bg-gradient-to-br from-amber-400 to-amber-600 text-white shadow-xl">
+            <i class="fas fa-wrench text-xl"></i>
+          </div>
+        </div>
+        <p class="text-4xl sm:text-5xl font-extrabold text-amber-600 mb-1">{{stats.mantenimientosPendientes}}</p>
+      </div>
+
+      <div class="rounded-2xl p-4 sm:p-6 transform transition-all hover:scale-105 bg-white/60 backdrop-blur-sm shadow-2xl border border-white/20">
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <h3 class="text-base sm:text-lg font-semibold text-gray-800">Clientes</h3>
+            <p class="text-xs text-gray-500">Registrados</p>
+          </div>
+          <div class="w-12 h-12 rounded-lg flex items-center justify-center bg-gradient-to-br from-rose-400 to-rose-600 text-white shadow-xl">
+            <i class="fas fa-users text-xl"></i>
+          </div>
+        </div>
+        <p class="text-4xl sm:text-5xl font-extrabold text-rose-600 mb-1">{{stats.totalClientes}}</p>
+      </div>
+    </div>
+
+    {{#if error}}
+    <div class="mt-6 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-r-lg">
+      <div class="flex items-center">
+        <i class="fas fa-exclamation-circle text-red-500 mr-3"></i>
+        <p>{{error}}</p>
+      </div>
+    </div>
+    {{/if}}
+
+    <!-- Gráfico y Estadísticas Adicionales -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-6 mt-6 sm:mt-8">
+      <div class="lg:col-span-2 bg-white rounded-xl shadow-lg p-4 sm:p-6">
+        <h3 class="text-lg sm:text-xl font-semibold text-gray-800 mb-3 sm:mb-4 flex items-center gap-2">
+          <i class="fas fa-chart-pie text-indigo-600"></i>
+          Distribución General
+        </h3>
+        <div class="p-2 sm:p-4 bg-gray-50 rounded-lg mb-3">
+          <p class="text-sm text-gray-600">Distribución de Recursos del Sistema</p>
+        </div>
+        <div id="chartContainer" class="relative" style="height: 250px sm:height: 300px">
+          <canvas id="dashboardChart"></canvas>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6">
+        <h3 class="text-lg sm:text-xl font-semibold text-gray-800 mb-3 sm:mb-4 flex items-center gap-2">
+          <i class="fas fa-info-circle text-indigo-600"></i>
+          Información Rápida
+        </h3>
+        <div class="space-y-3 sm:space-y-4">
+          <div class="p-3 sm:p-4 bg-gray-50 rounded-lg">
+            <p class="text-xs sm:text-sm font-medium text-gray-600">Fecha Actual</p>
+            <p class="text-base sm:text-lg font-semibold text-gray-800" id="currentDate"></p>
+          </div>
+          <div class="p-3 sm:p-4 bg-gray-50 rounded-lg">
+            <p class="text-xs sm:text-sm font-medium text-gray-600">Estado del Sistema</p>
+            <p class="text-base sm:text-lg font-semibold text-green-600 flex items-center gap-2">
+              <i class="fas fa-check-circle"></i> Activo
+            </p>
+          </div>
+          <!-- Nueva sección de acceso rápido -->
+          <div class="p-3 sm:p-4 bg-indigo-50 rounded-lg">
+            <p class="text-xs sm:text-sm font-medium text-indigo-600 mb-2">Accesos Rápidos</p>
+            <div class="grid grid-cols-2 gap-2">
+              <a href="/vehiculos" class="text-xs sm:text-sm p-2 bg-white rounded flex items-center gap-1 hover:bg-indigo-50 transition-colors">
+                <i class="fas fa-car text-indigo-500"></i> Vehículos
+              </a>
+              <a href="/alquileres" class="text-xs sm:text-sm p-2 bg-white rounded flex items-center gap-1 hover:bg-indigo-50 transition-colors">
+                <i class="fas fa-key text-indigo-500"></i> Alquileres
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{/main}}
+
+<script>
+  // Gráfico sencillo usando Chart.js (dona) para visualizar reparto de alquileres/vehículos
+  // Actualizar fecha actual
+  const updateDate = () => {
+    const now = new Date();
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('currentDate').textContent = now.toLocaleDateString('es-ES', options);
+  };
+  updateDate();
+  setInterval(updateDate, 60000);
+
+  // Inicializar gráfico
+  try {
+    const ctx = document.getElementById('dashboardChart').getContext('2d');
+    const data = [{{stats.vehiculos}}, {{stats.alquileresActivos}}, {{stats.mantenimientosPendientes}}, {{stats.totalClientes}}];
+    const labels = ['Vehículos','Alquileres','Mantenimientos','Clientes'];
+    
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: data,
+          backgroundColor: ['#6366f1','#10b981','#f59e0b','#ef4444'],
+          borderWidth: 2,
+          borderColor: '#ffffff'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              padding: 20,
+              font: {
+                size: 12,
+                weight: 'bold'
+              }
+            }
+          },
+          title: {
+            display: true,
+            text: 'Distribución de Recursos',
+            font: {
+              size: 16
+            },
+            padding: {
+              bottom: 30
+            }
+          }
+        },
+        animation: {
+          animateScale: true,
+          animateRotate: true
+        },
+        cutout: '60%'
+      }
+    });
+  } catch(e) {
+    console.warn('Error al inicializar el gráfico:', e);
+  }
+</script>

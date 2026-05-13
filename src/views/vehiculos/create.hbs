@@ -1,0 +1,88 @@
+{{#> layout}}
+<div class="max-w-lg mx-auto">
+  <div class="bg-white rounded-2xl shadow-lg border border-gray-100">
+    <div class="bg-gradient-to-r from-pink-500 to-purple-600 rounded-t-2xl p-6 text-white">
+      <h2 class="text-2xl font-bold flex items-center gap-3">
+        <i class="fa-solid fa-car-side text-3xl"></i>
+        Agregar Vehículo
+      </h2>
+      <p class="text-pink-100 mt-2">Ingresa los detalles del nuevo vehículo y pulsa Guardar para registrarlo en el sistema.</p>
+    </div>
+
+    <div class="p-6">
+      <form action="/vehiculos/add" method="post" class="space-y-6 needs-validate needs-submit-feedback needs-confirm">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Categoría</label>
+            <select name="id_categoria" required class="w-full border border-gray-200 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-100">
+              {{#each categorias}}<option value="{{this.id}}">{{this.nombre}}</option>{{/each}}
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Marca</label>
+            <input name="marca" required class="w-full border border-gray-200 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-100" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Modelo</label>
+            <input name="modelo" required class="w-full border border-gray-200 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-100" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Año</label>
+            <input name="anio" type="number" class="w-full border border-gray-200 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-100" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Tipo</label>
+            <input name="tipo" class="w-full border border-gray-200 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-100" placeholder="Sedán, SUV, etc." />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Precio por día</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">S/</span>
+              <input name="precio_dia" type="number" step="0.01" class="w-full border border-gray-200 pl-8 pr-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-100" />
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Estado</label>
+          <select name="estado" required class="w-full border border-gray-200 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-100">
+            <option value="disponible">✓ Disponible</option>
+            <option value="alquilado">🚗 Alquilado</option>
+            <option value="mantenimiento">🔧 En mantenimiento</option>
+          </select>
+        </div>
+
+        <div class="flex items-center gap-3 pt-4 border-t">
+          <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl font-medium bg-gradient-to-r from-pink-600 to-purple-600 text-white hover:from-pink-700 hover:to-purple-700 shadow-lg shadow-pink-600/20 transition-all">
+            <i class="fa-solid fa-floppy-disk"></i>
+            Guardar Vehículo
+          </button>
+          <a href="/vehiculos" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl font-medium border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">
+            <i class="fa-solid fa-xmark"></i>
+            Cancelar
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  // Agregar clases a todos los inputs, selects y textareas para consistencia visual
+  document.querySelectorAll('input, select, textarea').forEach(el => {
+    el.classList.add('form-input');
+  });
+  document.querySelectorAll('label').forEach(el => {
+    el.classList.add('form-label');
+  });
+});
+</script>
+
+{{/layout}}

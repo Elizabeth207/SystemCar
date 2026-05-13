@@ -1,0 +1,160 @@
+{{#> layout}}
+<div class="card">
+  <div class="card-accent"></div>
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 mt-3 gap-2">
+    <div>
+      <h2 class="text-2xl md:text-3xl font-bold uppercase flex items-center gap-4">
+        <i class="fa-solid fa-wallet text-3xl md:text-4xl text-pink-600 rounded-full p-3 bg-pink-50"></i>
+        <span>Pagos</span>
+      </h2>
+      <p class="text-sm text-gray-500 mt-1">Registro de pagos asociados a alquileres. Revisa los montos y métodos de pago.</p>
+    </div>
+    <div class="flex items-center">
+      <a href="/pagos/add" class="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-pink-600 to-purple-600 text-white rounded-xl shadow-lg hover:from-pink-700 hover:to-purple-700 transition-colors"><i class="fa-solid fa-plus"></i> Registrar pago</a>
+    </div>
+  </div>
+  <!-- Barra de búsqueda (live) -->
+  
+  {{#if pagos.length}}
+  <div class="data-table">
+    <div class="overflow-hidden rounded-lg shadow border">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead>
+          <tr class="bg-gradient-to-r from-pink-500 to-purple-600">
+            <th class="px-6 py-3 text-left text-sm font-semibold text-white rounded-tl-lg">ID</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-white">Alquiler</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-white">Cliente</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-white">Fecha</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-white">Monto</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-white">Método</th>
+            <th class="px-6 py-3 text-center text-sm font-semibold text-white rounded-tr-lg">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-100">
+          {{#each pagos}}
+          <tr class="hover:bg-gray-50">
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2">
+                {{{getFieldIcon 'id'}}}
+                <span class="text-sm text-gray-700">{{this.id}}</span>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2">
+                {{{getFieldIcon 'alquiler'}}}
+                <span class="text-sm text-gray-700">{{this.id_alquiler}}</span>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2">
+                {{{getFieldIcon 'nombre'}}}
+                <span class="text-sm text-gray-700">{{this.cliente_nombre}}</span>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2">
+                {{{getFieldIcon 'fecha'}}}
+                <span class="text-sm text-gray-700">{{formatDate this.fecha_pago 'DD-MM-YYYY'}}</span>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2">
+                {{{getFieldIcon 'precio'}}}
+                <span class="text-sm text-gray-700">{{formatCurrency this.monto}}</span>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2">
+                {{{getFieldIcon 'metodo'}}}
+                <span class="text-sm text-gray-700">{{this.metodo_pago}}</span>
+              </div>
+            </td>
+            <td class="px-6 py-4 text-center">
+              <div class="flex items-center justify-center gap-2">
+                <button onclick="verDetalles({{json this}})" class="inline-flex items-center px-3 py-1.5 bg-gray-50 text-gray-700 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors">
+                  <i class="fa-solid fa-eye text-gray-500 mr-1.5"></i>Ver
+                </button>
+                <a href="/pagos/edit/{{this.id}}" class="inline-flex items-center px-3 py-1.5 bg-pink-50 text-pink-600 rounded-lg border border-pink-100 hover:bg-pink-100 transition-colors">
+                  <i class="fa-solid fa-pen text-pink-500 mr-1.5"></i>Editar
+                </a>
+                <form action="/pagos/delete/{{this.id}}" method="post" class="inline delete-form" data-name="Pago #{{this.id}}">
+                  <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-600 rounded-lg border border-red-100 hover:bg-red-100 transition-colors">
+                    <i class="fa-solid fa-trash text-red-500 mr-1.5"></i>Eliminar
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {{else}}
+    <p>No hay pagos registrados.</p>
+  {{/if}}
+</div>
+{{/layout}}
+
+<script>
+function verDetalles(pago) {
+  const monto = pago.monto ? ('S/ ' + Number(pago.monto).toFixed(2)) : '-';
+  Swal.fire({
+    showCloseButton: true,
+    showConfirmButton: false,
+    width: 640,
+    html: `
+      <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <div class="p-6">
+          <div class="grid grid-cols-2 gap-6">
+            <div class="flex items-start gap-3">
+              <i class="fas fa-hashtag text-pink-500 mt-1"></i>
+              <div>
+                <div class="text-xs text-gray-500">ID Pago</div>
+                <div class="font-medium text-lg mt-1">#${pago.id || '-'}</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <i class="fas fa-handshake text-pink-500 mt-1"></i>
+              <div>
+                <div class="text-xs text-gray-500">ID Alquiler</div>
+                <div class="font-medium text-lg mt-1">#${pago.id_alquiler || '-'}</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <i class="fas fa-user text-pink-500 mt-1"></i>
+              <div>
+                <div class="text-xs text-gray-500">Cliente</div>
+                <div class="font-medium text-lg mt-1">${pago.cliente_nombre || '-'}</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <i class="fas fa-calendar text-pink-500 mt-1"></i>
+              <div>
+                <div class="text-xs text-gray-500">Fecha</div>
+                <div class="font-medium text-lg mt-1">${pago.fecha_pago ? new Date(pago.fecha_pago).toLocaleDateString('es-ES', {day: '2-digit', month: '2-digit', year: 'numeric'}) : '-'}</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <i class="fas fa-money-bill-wave text-pink-500 mt-1"></i>
+              <div>
+                <div class="text-xs text-gray-500">Monto</div>
+                <div class="font-medium text-lg mt-1">${monto}</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <i class="fas fa-credit-card text-pink-500 mt-1"></i>
+              <div>
+                <div class="text-xs text-gray-500">Método</div>
+                <div class="font-medium text-lg mt-1">${pago.metodo_pago || '-'}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `,
+    customClass: { popup: 'rounded-xl' }
+  });
+}
+</script>
+ 

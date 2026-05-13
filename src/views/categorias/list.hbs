@@ -1,0 +1,111 @@
+{{#> layout}}
+<div class="card">
+  <div class="card-accent"></div>
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 mt-3 gap-2">
+    <div>
+      <h2 class="text-2xl md:text-3xl font-bold uppercase flex items-center gap-4">
+        <i class="fa-solid fa-tags text-3xl md:text-4xl text-pink-600 rounded-full p-3 bg-pink-50"></i>
+        <span>Categorías</span>
+      </h2>
+      <p class="text-sm text-gray-500 mt-1">Administra las categorías disponibles para los vehículos.</p>
+    </div>
+    <div class="flex items-center">
+      <a href="/categorias/add" class="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-pink-600 to-purple-600 text-white rounded-xl shadow-lg hover:from-pink-700 hover:to-purple-700 transition-colors"><i class="fa-solid fa-plus"></i> Agregar</a>
+    </div>
+  </div>
+  <!-- Barra de búsqueda (live) -->
+  
+  {{#if categorias.length}}
+  <div class="data-table">
+    <div class="overflow-hidden rounded-lg shadow border">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead>
+          <tr class="bg-gradient-to-r from-pink-500 to-purple-600">
+            <th class="px-6 py-3 text-left text-sm font-semibold text-white rounded-tl-lg"><i class="fa-solid fa-tag mr-2 text-white/90"></i>Nombre</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-white"><i class="fa-solid fa-align-left mr-2 text-white/90"></i>Descripción</th>
+            <th class="px-6 py-3 text-center text-sm font-semibold text-white rounded-tr-lg">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-100">
+          {{#each categorias}}
+          <tr class="hover:bg-gray-50">
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2">
+                {{{getFieldIcon 'categoria'}}}
+                <span class="text-sm font-medium text-gray-900">{{this.nombre}}</span>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2">
+                {{{getFieldIcon 'descripcion'}}}
+                <span class="text-sm text-gray-700">{{this.descripcion}}</span>
+              </div>
+            </td>
+            <td class="px-6 py-4 text-center">
+              <div class="flex items-center justify-center gap-2">
+                <button onclick="verDetalles({{json this}})" class="inline-flex items-center px-3 py-1.5 bg-gray-50 text-gray-700 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors">
+                  <i class="fa-solid fa-eye text-gray-500 mr-1.5"></i>Ver
+                </button>
+                <a href="/categorias/edit/{{this.id}}" class="inline-flex items-center px-3 py-1.5 bg-pink-50 text-pink-600 rounded-lg border border-pink-100 hover:bg-pink-100 transition-colors">
+                  <i class="fa-solid fa-pen text-pink-500 mr-1.5"></i>Editar
+                </a>
+                <form action="/categorias/delete/{{this.id}}" method="post" class="inline delete-form" data-name="{{this.nombre}}">
+                  <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-600 rounded-lg border border-red-100 hover:bg-red-100 transition-colors">
+                    <i class="fa-solid fa-trash text-red-500 mr-1.5"></i>Eliminar
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {{else}}
+    <p>No hay categorías.</p>
+  {{/if}}
+</div>
+{{/layout}}
+
+<script>
+function verDetalles(categoria) {
+  Swal.fire({
+    showCloseButton: true,
+    showConfirmButton: false,
+    width: 600,
+    html: `
+      <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <div class="p-6">
+          <div class="grid grid-cols-2 gap-6">
+            <div class="flex items-start gap-3">
+              <i class="fas fa-hashtag text-pink-500 mt-1"></i>
+              <div>
+                <div class="text-xs text-gray-500">ID</div>
+                <div class="font-medium text-lg mt-1">#${categoria.id || '-'}</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <i class="fas fa-tag text-pink-500 mt-1"></i>
+              <div>
+                <div class="text-xs text-gray-500">Nombre</div>
+                <div class="font-medium text-lg mt-1">${categoria.nombre || '-'}</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-3 col-span-2">
+              <i class="fas fa-align-left text-pink-500 mt-1"></i>
+              <div>
+                <div class="text-xs text-gray-500">Descripción</div>
+                <div class="font-medium text-lg mt-1">${categoria.descripcion || '-'}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `,
+    customClass: { popup: 'rounded-xl' }
+  });
+}
+</script>
+
+

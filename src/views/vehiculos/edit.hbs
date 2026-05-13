@@ -1,0 +1,77 @@
+{{#> layout}}
+<div class="max-w-2xl mx-auto">
+  <div class="bg-white rounded-2xl shadow-lg border border-gray-100">
+    <div class="bg-gradient-to-r from-pink-500 to-purple-600 rounded-t-2xl p-6 text-white">
+      <h2 class="text-2xl font-bold flex items-center gap-3">
+        <i class="fa-solid fa-car-side text-3xl"></i>
+        Editar Vehículo
+      </h2>
+      <p class="text-pink-100 mt-2">Actualiza los datos del vehículo y guarda los cambios.</p>
+    </div>
+
+    <div class="p-6">
+      <form action="/vehiculos/edit/{{vehiculo.id}}" method="post" class="space-y-6 needs-validate needs-submit-feedback needs-confirm">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Categoría</label>
+            <select name="id_categoria" required class="w-full border border-gray-200 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-100">
+              {{#each categorias}}<option value="{{this.id}}" {{#ifEquals this.id ../vehiculo.id_categoria}}selected{{/ifEquals}}>{{this.nombre}}</option>{{/each}}
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Marca</label>
+            <input name="marca" value="{{vehiculo.marca}}" required class="w-full border border-gray-200 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-100" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Modelo</label>
+            <input name="modelo" value="{{vehiculo.modelo}}" required class="w-full border border-gray-200 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-100" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Año</label>
+            <input name="anio" type="number" value="{{vehiculo.anio}}" class="w-full border border-gray-200 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-100" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Tipo</label>
+            <input name="tipo" value="{{vehiculo.tipo}}" class="w-full border border-gray-200 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-100" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Precio por día</label>
+            <input name="precio_dia" type="number" step="0.01" value="{{vehiculo.precio_dia}}" class="w-full border border-gray-200 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-100" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Estado</label>
+          <select name="estado" required class="w-full border border-gray-200 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-100">
+            <option value="disponible" {{#ifEquals vehiculo.estado 'disponible'}}selected{{/ifEquals}}>Disponible</option>
+            <option value="alquilado" {{#ifEquals vehiculo.estado 'alquilado'}}selected{{/ifEquals}}>Alquilado</option>
+            <option value="mantenimiento" {{#ifEquals vehiculo.estado 'mantenimiento'}}selected{{/ifEquals}}>Mantenimiento</option>
+          </select>
+        </div>
+
+        <div class="flex items-center gap-3 pt-4 border-t">
+          <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl font-medium bg-gradient-to-r from-pink-600 to-purple-600 text-white hover:from-pink-700 hover:to-purple-700 shadow transition">
+            <i class="fa-solid fa-floppy-disk"></i>
+            Guardar cambios
+          </button>
+          <a href="/vehiculos" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl font-medium border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">Cancelar</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  document.querySelectorAll('input, select, textarea').forEach(el => el.classList.add('form-input'));
+  document.querySelectorAll('label').forEach(el => el.classList.add('form-label'));
+});
+</script>
+
+{{/layout}}

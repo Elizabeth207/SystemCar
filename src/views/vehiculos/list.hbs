@@ -1,0 +1,184 @@
+{{#> layout}}
+<div class="card">
+  <div class="card-accent"></div>
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 mt-3 gap-2">
+    <div>
+      <h2 class="text-2xl md:text-3xl font-bold uppercase flex items-center gap-4">
+        <i class="fa-solid fa-gem text-3xl md:text-4xl text-pink-600 rounded-full p-3 bg-pink-50"></i>
+        <span>Vehículos</span>
+      </h2>
+      <p class="text-sm text-gray-500 mt-1">Gestión de vehículos: añade modelos, establece precios y controla el estado de la flota.</p>
+    </div>
+    <div class="flex items-center gap-4">
+  
+      
+      <!-- Botón Agregar -->
+      <a href="/vehiculos/add" class="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-pink-600 to-purple-600 text-white rounded-xl shadow-lg hover:from-pink-700 hover:to-purple-700 transition-colors">
+        <i class="fa-solid fa-plus"></i> 
+        Agregar
+      </a>
+    </div>
+  </div>
+  
+  {{#if vehiculos.length}}
+  <div class="table-container">
+      <table class="min-w-full">
+        <thead>
+          <tr class="bg-gradient-to-r from-pink-500 to-purple-600">
+            <th class="px-6 py-3 text-left text-sm font-semibold text-white rounded-tl-lg"><i class="fa-solid fa-tag mr-2 text-white/90"></i>Marca</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-white"><i class="fa-solid fa-car-side mr-2 text-white/90"></i>Modelo</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-white"><i class="fa-solid fa-calendar-alt mr-2 text-white/90"></i>Año</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-white"><i class="fa-solid fa-list mr-2 text-white/90"></i>Tipo</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-white"><i class="fa-solid fa-money-bill mr-2 text-white/90"></i>Precio/día</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-white"><i class="fa-solid fa-circle-info mr-2 text-white/90"></i>Estado</th>
+            <th class="px-6 py-3 text-center text-sm font-semibold text-white rounded-tr-lg">Acciones</th>
+        </tr>
+      </thead>
+        <tbody class="bg-white divide-y divide-gray-100">
+          {{#each vehiculos}}
+          <tr class="hover:bg-gray-50">
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2">
+                {{{getFieldIcon 'marca'}}}
+                <span class="text-sm font-medium text-gray-900">{{this.marca}}</span>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2">
+                {{{getFieldIcon 'modelo'}}}
+                <span class="text-sm text-gray-700">{{this.modelo}}</span>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2">
+                {{{getFieldIcon 'fecha'}}}
+                <span class="text-sm text-gray-700">{{this.anio}}</span>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2">
+                {{{getFieldIcon 'tipo'}}}
+                <span class="text-sm text-gray-700">{{this.tipo}}</span>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2">
+                {{{getFieldIcon 'precio'}}}
+                <span class="text-sm text-gray-700">{{formatCurrency this.precio_dia}}</span>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <span class="status-badge {{toLowerCase this.estado}}">
+                {{#if (eq this.estado "disponible")}}<i class="fa-solid fa-check mr-1"></i>{{/if}}
+                {{#if (eq this.estado "alquilado")}}<i class="fa-solid fa-car mr-1"></i>{{/if}}
+                {{#if (eq this.estado "mantenimiento")}}<i class="fa-solid fa-wrench mr-1"></i>{{/if}}
+                {{this.estado}}
+              </span>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex items-center justify-center gap-2">
+                <!-- Acciones: Ver (modal), Editar, Eliminar - mismo diseño que otras tablas -->
+                <button 
+                  onclick="verDetalles({{json this}})" 
+                  class="inline-flex items-center px-3 py-1.5 bg-gray-50 text-gray-700 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors"
+                  title="Ver detalles">
+                  <i class="fa-solid fa-eye text-gray-500 mr-1.5"></i>
+                  <span>Ver</span>
+                </button>
+
+                <a href="/vehiculos/edit/{{this.id}}" class="inline-flex items-center px-3 py-1.5 bg-purple-50 text-purple-600 rounded-lg border border-purple-100 hover:bg-purple-100 transition-colors" title="Editar vehículo">
+                  <i class="fa-solid fa-pen text-purple-500 mr-1.5"></i>
+                  <span>Editar</span>
+                </a>
+
+                <form action="/vehiculos/delete/{{this.id}}" method="post" class="inline delete-form" data-name="{{this.marca}} {{this.modelo}}">
+                  <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-600 rounded-lg border border-red-100 hover:bg-red-100 transition-colors" title="Eliminar vehículo">
+                    <i class="fa-solid fa-trash text-red-500 mr-1.5"></i>
+                    <span>Eliminar</span>
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {{else}}
+    <p>No hay vehículos.</p>
+  {{/if}}
+</div>
+{{/layout}}
+
+  <script>
+  function verDetalles(vehiculo) {
+    const estado = (vehiculo.estado || '').toLowerCase();
+    const estadoMap = {
+      disponible: { cls: 'bg-green-50 text-green-700', icon: '<i class="fa-solid fa-check"></i>', label: 'Disponible' },
+      alquilado: { cls: 'bg-blue-50 text-blue-700', icon: '<i class="fa-solid fa-car"></i>', label: 'Alquilado' },
+      mantenimiento: { cls: 'bg-amber-50 text-amber-700', icon: '<i class="fa-solid fa-wrench"></i>', label: 'Mantenimiento' }
+    };
+    const estadoData = estadoMap[estado] || { cls: 'bg-gray-50 text-gray-700', icon: '<i class="fa-solid fa-circle-info"></i>', label: vehiculo.estado || 'N/A' };
+
+    const precio = vehiculo.precio_dia ? ('S/ ' + Number(vehiculo.precio_dia).toFixed(2)) : '-';
+
+    Swal.fire({
+      showCloseButton: true,
+      showConfirmButton: false,
+      width: 720,
+      html: `
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+          <div class="p-6">
+            <div class="grid grid-cols-2 gap-6">
+              <div class="flex items-start gap-3">
+                <i class="fas fa-car text-pink-500 mt-1"></i>
+                <div>
+                  <div class="text-xs text-gray-500">Marca</div>
+                  <div class="font-medium text-lg mt-1">${vehiculo.marca || '-'}</div>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <i class="fas fa-car-side text-pink-500 mt-1"></i>
+                <div>
+                  <div class="text-xs text-gray-500">Modelo</div>
+                  <div class="font-medium text-lg mt-1">${vehiculo.modelo || '-'}</div>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <i class="fas fa-calendar text-pink-500 mt-1"></i>
+                <div>
+                  <div class="text-xs text-gray-500">Año</div>
+                  <div class="font-medium text-lg mt-1">${vehiculo.anio || '-'}</div>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <i class="fas fa-car-alt text-pink-500 mt-1"></i>
+                <div>
+                  <div class="text-xs text-gray-500">Tipo</div>
+                  <div class="font-medium text-lg mt-1">${vehiculo.tipo || '-'}</div>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <i class="fas fa-money-bill-wave text-pink-500 mt-1"></i>
+                <div>
+                  <div class="text-xs text-gray-500">Precio por día</div>
+                  <div class="font-medium text-lg mt-1">${precio}</div>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <i class="fas fa-circle-check text-pink-500 mt-1"></i>
+                <div>
+                  <div class="text-xs text-gray-500">Estado</div>
+                  <div class="font-medium text-lg mt-1">${vehiculo.estado || '-'}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `,
+      customClass: { popup: 'rounded-xl' }
+    });
+  }
+  </script>
+  

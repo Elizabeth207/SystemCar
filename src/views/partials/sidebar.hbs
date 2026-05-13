@@ -1,0 +1,162 @@
+<!-- Sidebar / Menú lateral -->
+<aside class="hidden md:block w-72 bg-gradient-to-b from-purple-700 via-purple-800 to-purple-900 text-white shadow-2xl">
+  <div class="h-full flex flex-col">
+    <!-- Logo/Título -->
+    <div class="px-6 py-8 border-b border-white/10 bg-purple-900/40">
+        <div class="flex items-center gap-4">
+          <div class="p-3 bg-white/10 rounded-lg backdrop-blur-sm">
+            <i class="fa-solid fa-car text-white text-2xl"></i>
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold text-white tracking-tight">Sistema de Gestion RentalCars</h2>
+            {{#if user}}
+              <div class="text-sm text-white/90 mt-2 flex items-center gap-3">
+                <div id="sidebarAvatar" class="w-8 h-8 rounded-lg bg-purple-500/30 backdrop-blur-sm flex items-center justify-center text-sm font-semibold shadow-inner" data-name="{{user.nombre}}">
+                  U
+                </div>
+                <div>
+                  <div class="font-medium">{{user.nombre}}</div>
+                  <div class="text-xs text-purple-200/80">{{user.rol}}</div>
+                </div>
+              </div>
+            {{/if}}
+          </div>
+        </div>
+      </div>
+
+    <!-- Links de navegación -->
+    <nav class="flex-1 overflow-y-auto px-4 py-6">
+      <div class="space-y-1.5">
+        <a href="/" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{#if (eq active 'dashboard')}}bg-white/20 shadow-lg shadow-white/5 font-medium{{else}}hover:bg-white/10{{/if}}">
+          <i class="fa-solid fa-gauge-high w-5"></i>
+          <span>Dashboard</span>
+        </a>
+        
+        <a href="/vehiculos" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{#if (eq active 'vehiculos')}}bg-white/20 shadow-lg shadow-white/5 font-medium{{else}}hover:bg-white/10{{/if}}">
+          <i class="fa-solid fa-car-side w-5"></i>
+          <span>Vehículos</span>
+        </a>
+        
+        <a href="/categorias" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{#if (eq active 'categorias')}}bg-white/20 shadow-lg shadow-white/5 font-medium{{else}}hover:bg-white/10{{/if}}">
+          <i class="fa-solid fa-tags w-5"></i>
+          <span>Categorías</span>
+        </a>
+        
+        <a href="/clientes" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{#if (eq active 'clientes')}}bg-white/20 shadow-lg shadow-white/5 font-medium{{else}}hover:bg-white/10{{/if}}">
+          <i class="fa-solid fa-users w-5"></i>
+          <span>Clientes</span>
+        </a>
+        
+        <a href="/empleados" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{#if (eq active 'empleados')}}bg-white/20 shadow-lg shadow-white/5 font-medium{{else}}hover:bg-white/10{{/if}}">
+          <i class="fa-solid fa-user-tie w-5"></i>
+          <span>Empleados</span>
+        </a>
+        
+        <a href="/alquileres" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{#if (eq active 'alquileres')}}bg-white/20 shadow-lg shadow-white/5 font-medium{{else}}hover:bg-white/10{{/if}}">
+          <i class="fa-solid fa-handshake w-5"></i>
+          <span>Alquileres</span>
+        </a>
+        
+        <a href="/pagos" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{#if (eq active 'pagos')}}bg-white/20 shadow-lg shadow-white/5 font-medium{{else}}hover:bg-white/10{{/if}}">
+          <i class="fa-solid fa-credit-card w-5"></i>
+          <span>Pagos</span>
+        </a>
+        
+        <a href="/mantenimientos" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{#if (eq active 'mantenimientos')}}bg-white/20 shadow-lg shadow-white/5 font-medium{{else}}hover:bg-white/10{{/if}}">
+          <i class="fa-solid fa-wrench w-5"></i>
+          <span>Mantenimientos</span>
+        </a>
+      </div>
+    </nav>
+
+    <!-- Logout (footer) -->
+    <div class="px-4 py-6 border-t border-white/10">
+      <form id="logoutForm" action="/logout" method="POST">
+        <button type="submit" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 hover:bg-white/10 text-white/80 hover:text-white">
+          <i class="fa-solid fa-right-from-bracket w-5"></i>
+          <span>Cerrar sesión</span>
+        </button>
+      </form>
+    </div>
+  </div>
+</aside>
+
+<!-- Botón móvil para abrir/cerrar sidebar -->
+<div class="md:hidden fixed top-4 left-4 z-30">
+  <button id="mobileSidebarBtn" class="bg-white p-2 rounded shadow">
+    <i class="fa-solid fa-bars"></i>
+  </button>
+</div>
+
+<script>
+  // Toggle sidebar on mobile
+  const btn = document.getElementById('mobileSidebarBtn');
+  btn?.addEventListener('click', () => {
+    const aside = document.querySelector('aside');
+    if (aside) aside.classList.toggle('open');
+  });
+</script>
+
+<!-- (logout moved inside sidebar for visibility) -->
+
+<script>
+  // Confirmación antes de logout usando SweetAlert2 (carga en layout principal)
+  const logoutForm = document.getElementById('logoutForm');
+  logoutForm?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (typeof Swal !== 'undefined') {
+      Swal.fire({
+        title: '¿Cerrar sesión?',
+        html: '<p class="text-gray-500">¿Estás seguro que deseas cerrar tu sesión actual?</p>',
+        icon: 'warning',
+        iconColor: '#E11D48',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, cerrar sesión',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#E11D48',
+        cancelButtonColor: '#6B7280',
+        customClass: {
+          popup: 'rounded-2xl',
+          confirmButton: 'rounded-lg text-sm px-5 py-2.5',
+          cancelButton: 'rounded-lg text-sm px-5 py-2.5'
+        },
+        showClass: {
+          popup: 'animate__animated animate__fadeInDown animate__faster'
+        },
+        hideClass: {
+          popup: 'animate__animated animate__fadeOutUp animate__faster'
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            title: 'Cerrando sesión...',
+            text: 'Redirigiendo al login',
+            timer: 1500,
+            icon: 'success',
+            iconColor: '#E11D48',
+            showConfirmButton: false,
+            customClass: {
+              popup: 'rounded-2xl'
+            }
+          }).then(() => {
+            logoutForm.submit();
+          });
+        }
+      });
+    } else {
+      logoutForm.submit();
+    }
+  });
+</script>
+
+<script>
+  // Rellenar inicial del usuario (si existe) en el avatar del sidebar
+  (function(){
+    const av = document.getElementById('sidebarAvatar');
+    if (!av) return;
+    const name = av.getAttribute('data-name');
+    if (name && name.length > 0) {
+      av.textContent = name.trim().charAt(0).toUpperCase();
+    }
+  })();
+</script>
